@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .app-surface {
+    @apply rounded-2xl border border-slate-200/80 bg-white/95 shadow-app ring-1 ring-slate-900/[0.035];
+  }
+}
+
+html {
+  -webkit-tap-highlight-color: rgba(15, 23, 42, 0.06);
+}
+
+body {
+  margin: 0;
+  @apply font-sans text-slate-900 antialiased;
+}
+
+@keyframes agentBotFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.agent-bot-float {
+  animation: agentBotFloat 2.2s ease-in-out infinite;
+}
+
+@keyframes agentBotWave {
+  0%,
+  95%,
+  100% {
+    transform: rotate(0deg);
+  }
+  96% {
+    transform: rotate(-10deg);
+  }
+  97% {
+    transform: rotate(10deg);
+  }
+  98% {
+    transform: rotate(-8deg);
+  }
+  99% {
+    transform: rotate(8deg);
+  }
+}
+
+.agent-bot-wave {
+  transform-origin: 50% 55%;
+  animation: agentBotWave 30s ease-in-out infinite;
+}
+
+@keyframes tutorialStepIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-tutorial-step-in {
+  animation: tutorialStepIn 0.35s ease-out both;
+}
+
+@keyframes tutorialRingPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 4px rgba(167, 139, 250, 0.25),
+      0 0 20px rgba(124, 58, 237, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 0 6px rgba(167, 139, 250, 0.4),
+      0 0 28px rgba(124, 58, 237, 0.35);
+  }
+}
+
+.tutorial-spotlight-ring {
+  animation: tutorialRingPulse 2.4s ease-in-out infinite;
+}

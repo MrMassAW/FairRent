@@ -1,0 +1,17 @@
+[
+  {
+    "id": "rmr-canada-2025",
+    "label": "Canada (national)",
+    "url": "https://assets.cmhc-schl.gc.ca/sites/cmhc/professional/housing-markets-data-and-research/housing-data-tables/rental-market/rental-market-report-data-tables/2025/rmr-canada-2025-en.xlsx",
+    "defaultSheet": "Table 6.0",
+    "ingestProfile": "rms-table-60-purpose-built"
+  },
+  {
+    "id": "rmr-british-columbia-2025",
+    "label": "British Columbia",
+    "url": "https://assets.cmhc-schl.gc.ca/sites/cmhc/professional/housing-markets-data-and-research/housing-data-tables/rental-market/rental-market-report-data-tables/2025/rmr-british-columbia-2025-en.xlsx",
+    "defaultSheet": "Table 3.1.2",
+    "ingestProfile": "rms-table-312-townhouse-apartment-combined",
+    "provinceCode": "BC"
+  }
+]

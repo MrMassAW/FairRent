@@ -1,0 +1,38 @@
+name: Weekly Rental Data Refresh
+
+on:
+  schedule:
+    - cron: '0 9 * * 0'
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run weekly update
+        run: npm run data:weekly-update
+
+      - name: Commit generated historical DB
+        run: |
+          git add public/data/historical-rents-db.json
+          if git diff --cached --quiet; then
+            echo "No data changes."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -m "chore: refresh weekly rental data snapshot"
+            git push
+          fi

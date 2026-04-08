@@ -1,0 +1,65 @@
+{
+  "project_name": "Canada_Utility_Data_Ingestor",
+  "version": "2026.03",
+  "notes": "CKAN package id below is resolved via open.canada.ca federation (Alberta Energy Prices CSV). The original spec UUID pointed at a different dataset; this file keeps the ingestor contract while using a working CSV for NatGas/WCS benchmarks.",
+  "data_sources": [
+    {
+      "provider": "Ontario Energy Board (OEB)",
+      "utility": "Electricity & Gas",
+      "endpoint_type": "REST_JSON",
+      "url": "https://www.oeb.ca/ontarios-energy-sector/open-data",
+      "oeb_electricity_xml_url": "https://www.oeb.ca/_html/calculator/data/BillData.xml",
+      "dataset_ids": ["residential-electricity-rates", "residential-natural-gas-rates"],
+      "extraction_logic": "GET BillData.xml; parse BillDataRow with Class=RESIDENTIAL; use Net ($/kWh) and SC (monthly service $) for Ontario distributor rows."
+    },
+    {
+      "provider": "Hydro-Québec",
+      "utility": "Electricity",
+      "endpoint_type": "Opendatasoft_API",
+      "url": "https://donnees.hydroquebec.com/api/explore/v2.1/catalog/datasets/production-electricite-quebec/records",
+      "params": { "limit": 100, "order_by": "date" },
+      "extraction_logic": "Fetch JSON; map valeurs_total and date. Series is provincial generation (MWh), not retail tariffs — stored as canonical audit rows only; not blended into regional multipliers."
+    },
+    {
+      "provider": "Government of Alberta (via open.canada.ca)",
+      "utility": "Energy benchmarks",
+      "endpoint_type": "CKAN_API",
+      "url": "https://open.canada.ca/data/en/api/3/action/package_show?id=6dc97b50-5bbb-482d-8dd5-c9b23cd770dc",
+      "ckan_package_id": "6dc97b50-5bbb-482d-8dd5-c9b23cd770dc",
+      "extraction_logic": "package_show → CSV resource; filter Type NatGas for $/GJ (Alberta benchmark). Optional cross-check only."
+    },
+    {
+      "provider": "Statistics Canada (StatCan)",
+      "utility": "Average Provincial Rates",
+      "endpoint_type": "WDS_API",
+      "url": "https://www150.statcan.gc.ca/t1/wds/rest/getDataFromCubePidCoordAndLatestNPeriods",
+      "payload": {
+        "productId": 18100001,
+        "coordinate": "1.1.1.1",
+        "latestN": 12
+      },
+      "extraction_logic": "Primary pipeline uses getFullTableDownloadCSV for tables 18100001, 25100059, 18100204 (see statcanUtilityIngest.ts)."
+    },
+    {
+      "provider": "OpenEI (URDB)",
+      "utility": "Standardized Utility Tariffs",
+      "endpoint_type": "REST_API",
+      "url": "https://api.openei.org/utility_rates",
+      "api_key_required": true,
+      "params": { "version": "latest", "format": "json", "address": "Canada" },
+      "extraction_logic": "Optional CLI when OPENEI_API_KEY is set; postal-level queries preferred for production."
+    }
+  ],
+  "ingestion_schema": {
+    "target_fields": [
+      "source_provider",
+      "utility_type",
+      "region",
+      "effective_date",
+      "unit_cost_cad",
+      "fixed_monthly_fee",
+      "currency",
+      "unit_of_measure"
+    ]
+  }
+}
